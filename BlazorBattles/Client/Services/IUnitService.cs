@@ -8,8 +8,9 @@ namespace BlazorBattles.Client.Services
 {
     public interface IUnitService
     {
-        List<Unit> Units { get; }
+        List<Unit> Units { get; set; }
         List<UserUnit> MyUnits { get; set; }
         void AddUnit(int unitId);
+        Task LoadUnitsAsync();
     }
 }
