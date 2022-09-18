@@ -1,0 +1,55 @@
+﻿using BlazorBattles.Server.Data;
+using BlazorBattles.Shared;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace BlazorBattles.Server.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
+    {
+        private readonly IAuthRepository _authRepository;
+
+        public AuthController(IAuthRepository authRepository)
+        {
+            _authRepository = authRepository;
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(UserRegister register)
+        {
+            var response = await _authRepository.Register(new User
+            {
+                Username = register.Username,
+                Email = register.Email,
+                Bananas = register.Bananas,
+                DateOfBirth = register.DateOfBirth,
+                IsConfirmed = register.IsConfirmed
+            }, register.Password);
+
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(UserLogin request)
+        {
+            var response = await _authRepository.Login(request.Email, request.Password);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+    }
+}
